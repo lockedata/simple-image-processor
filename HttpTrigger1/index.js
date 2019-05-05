@@ -51,12 +51,12 @@ module.exports = async function (context, req) {
         context.log('JavaScript HTTP trigger function started to process a request.');
 
         if (req.query.imageurl) {
-            let url = req.query.imageurl + req.query.name;
-            const fileFormat = url.substring(url.indexOf('format=') + 7, url.indexOf('&name'));
-            const imagePath = `./${url.substring(url.indexOf('name=') + 5)}.${fileFormat}`;
+            let url = req.query.imageurl;
+            const fileFormat = url.substring(url.indexOf('format=') + 7);
+            const imagePath = `./${req.query.name}.${fileFormat}`;
 
             context.res = {
-                body: `::${url}::${fileFormat}::${imagePath}::${req.query.name}::`
+                body: `::${url}::${fileFormat}::${imagePath}::`
             };
 
             // await downloadImage(req.query.imageurl, imagePath);
