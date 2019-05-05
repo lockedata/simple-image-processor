@@ -56,7 +56,7 @@ module.exports = async function (context, req) {
             const imagePath = `./${url.substring(url.indexOf('name=') + 5)}.${fileFormat}`;
 
             context.res = {
-                body: `::${url}::${fileFormat}::${imagePath}::`
+                body: `::${url}::${fileFormat}::${imagePath}::${req.query}::`
             };
 
             // await downloadImage(req.query.imageurl, imagePath);
