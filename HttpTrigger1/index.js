@@ -51,14 +51,14 @@ module.exports = async function (context, req) {
         context.log('JavaScript HTTP trigger function started to process a request.');
 
         if (req.query.imageurl) {
-            let url = req.query.imageurl;
+            let url = _com_au/all-models-new/1-series/navigation/BMW-1-Series%205-door_Modelcard.png?format=png&name=bmw6' // req.query.imageurl;
             const fileFormat = url.substring(url.indexOf('format=') + 7, url.indexOf('&name'));
             const imagePath = `./${url.substring(url.indexOf('name=') + 5)}.${fileFormat}`;
             await downloadImage(req.query.imageurl, imagePath);
             await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
-                body: `${imagePath} added to blob`
+                body: 'image added to blob'
             };
         }
         else {
