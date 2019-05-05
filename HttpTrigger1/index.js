@@ -55,10 +55,10 @@ module.exports = async function (context, req) {
             const fileFormat = url.substring(url.indexOf('format=') + 7, url.indexOf('&name'));
             const imagePath = `./${url.substring(url.indexOf('name=') + 5)}.${fileFormat}`;
 
-                        context.res = {
-                body: `${url}    :        ${fileFormat}   ${imagePath} `
+            context.res = {
+                body: `::${url}::${fileFormat}::${imagePath}::`
             };
-            
+
             // await downloadImage(req.query.imageurl, imagePath);
             // await uploadLocalFile('samples', imagePath);
             // await deleteLocalFile(imagePath);
