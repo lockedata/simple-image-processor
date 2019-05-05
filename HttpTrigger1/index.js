@@ -51,7 +51,7 @@ module.exports = async function (context, req) {
         context.log('JavaScript HTTP trigger function started to process a request.');
 
         if (req.query.imageurl) {
-            const imagePath = `./${Date.now()}.jpg`;
+            const imagePath = `./${Date.now()}.png`;
             await downloadImage(req.query.imageurl, imagePath);
             await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
