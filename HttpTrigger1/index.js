@@ -53,7 +53,7 @@ module.exports = async function (context, req) {
         if (req.query.imageurl) {
             const imagePath = `./${Date.now()}.jpg`;
             await downloadImage(req.query.imageurl, imagePath);
-            await uploadLocalFile('sample', imagePath);
+            await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
                 body: "Image added to blob"
