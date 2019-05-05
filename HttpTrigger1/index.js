@@ -62,14 +62,14 @@ module.exports = async function (context, req) {
         else {
             context.res = {
                 status: 400,
-                body: "Please pass the image url parameter query"
+                body: "Please pass the image url parameter in query"
             };
         }        
     }
     catch(err) {
         context.res = {
             status: 500,
-            body: "Internal error"
+            body: `Internal error: ${err.message}`
         };
     }
 };
