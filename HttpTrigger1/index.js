@@ -58,7 +58,7 @@ module.exports = async function (context, req) {
             await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
-                body: "Image added to blob"
+                body: `${imagePath} added to blob`
             };
         }
         else {
