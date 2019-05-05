@@ -1,27 +1,27 @@
-module.exports = async function (context, req) {
-    context.log('JavaScript HTTP trigger functionnnnnnnnnnnnn processed a request.');
-
-    if (req.query.name || (req.body && req.body.name)) {
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: "Hello " + (req.query.name || req.body.name)
-        };
-    }
-    else {
-        context.res = {
-            status: 400,
-            body: "Please pass a name on the query stringggggggggggg or in the request body"
-        };
-    }
-};
-
 require('dotenv').load();
+
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 
 const storage = require('azure-storage');
 const blobService = storage.createBlobService();
 
-const uploadLocalFile = async (containerName, filePath) => {
+const downloadImage = (url, localPath) => {
+    return new Promise((resolve, reject) => {
+        let file = fs.createWriteStream(localPath);
+        https.get(url, function(response, err) {
+            if(err) {
+                reject();
+            }
+
+            response.pipe(file);
+            resolve();
+        });
+    })
+}
+
+const uploadLocalFile = (containerName, filePath) => {
     return new Promise((resolve, reject) => {
         const fullPath = path.resolve(filePath);
         const blobName = path.basename(filePath);
@@ -35,14 +35,41 @@ const uploadLocalFile = async (containerName, filePath) => {
     });
 };
 
-const execute = async () => {
-    try {
-        const response = await uploadLocalFile('samples', '.README.md');
-        console.log(response.message);
-    } catch(err) {
-        console.log(err);
-    }
+const deleteLocalFile = (fileName) => {
+    return new Promise((resolve, reject) => {
+        fs.unlink(fileName, function (err) {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        });
+    })
 }
-    // response = await uploadLocalFile("samples", localFilePath);
 
-execute().then(() => console.log("Done")).catch((e) => console.log(e));
+module.exports = async function (context, req) {
+    try {
+        context.log('JavaScript HTTP trigger function started to process a request.');
+
+        if (req.query.imageurl) {
+            const imagePath = `./${Date.now()}.jpg`;
+            await downloadImage(req.query.imageurl, imagePath);
+            await uploadLocalFile('sample', imagePath);
+            await deleteLocalFile(imagePath);
+            context.res = {
+                body: "Image added to blob"
+            };
+        }
+        else {
+            context.res = {
+                status: 400,
+                body: "Please pass the image url parameter query"
+            };
+        }        
+    }
+    catch(err) {
+        context.res = {
+            status: 500,
+            body: "Internal error"
+        };
+    }
+};
