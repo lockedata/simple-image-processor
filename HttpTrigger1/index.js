@@ -54,17 +54,12 @@ module.exports = async function (context, req) {
             let url = req.query.imageurl;
             const fileFormat = url.substring(url.indexOf('format=') + 7);
             const imagePath = `./${req.query.name}.${fileFormat}`;
-
+            await downloadImage(req.query.imageurl, imagePath);
+            await uploadLocalFile('samples', imagePath);
+            await deleteLocalFile(imagePath);
             context.res = {
-                body: `::${url}::${fileFormat}::${imagePath}::`
+                body: `${imagePath} added to blob`
             };
-
-            // await downloadImage(req.query.imageurl, imagePath);
-            // await uploadLocalFile('samples', imagePath);
-            // await deleteLocalFile(imagePath);
-            // context.res = {
-            //     body: 'image added to blob'
-            // };
         }
         else {
             context.res = {
