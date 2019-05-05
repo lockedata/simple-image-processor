@@ -1,1 +1,2 @@
-# simple-image-processor
+# imageprocessor
+simple image processor
