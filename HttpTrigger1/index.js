@@ -55,10 +55,12 @@ module.exports = async function (context, req) {
             const fileFormat = url.substring(url.indexOf('format=') + 7);
             const imagePath = `./${req.query.name}.${fileFormat}`;
             await downloadImage(req.query.imageurl, imagePath);
-            await uploadLocalFile('sample', imagePath);
+            const stats = fs.statSync(imagePath)
+            const fileSizeInBytes = stats.size
+            await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
-                body: `${imagePath} added to blob`
+                body: fileSizeInBytes
             };
         }
         else {
