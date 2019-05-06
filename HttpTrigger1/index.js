@@ -2,24 +2,34 @@ require('dotenv').load();
 
 const path = require('path');
 const fs = require('fs');
-const request = require('request');
+const axios = require('axios');
 
 const storage = require('azure-storage');
 const blobService = storage.createBlobService();
 
-const downloadImage = (url, localPath) => {
-    return new Promise((resolve, reject) => {
-        request.head(url, function(err, res, body){
-            if(err) {
-                reject();
-            }
 
-            request(uri).pipe(fs.createWriteStream(localPath)).on('close', () => {
-                resolve();
-            });
-        });
-    })
-}
+const downloadImage = (url, localPath) => axios({
+  url: url,
+  responseType: 'stream',
+}).then(response => {
+  response.data.pipe(fs.createWriteStream(localPath));
+});
+
+
+
+// const downloadImage = (url, localPath) => {
+//     return new Promise((resolve, reject) => {
+//         request.head(url, function(err, res, body){
+//             if(err) {
+//                 reject();
+//             }
+
+//             request(uri).pipe(fs.createWriteStream(localPath)).on('close', () => {
+//                 resolve();
+//             });
+//         });
+//     })
+// }
 
 const uploadLocalFile = (containerName, filePath) => {
     return new Promise((resolve, reject) => {
