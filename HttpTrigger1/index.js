@@ -2,21 +2,21 @@ require('dotenv').load();
 
 const path = require('path');
 const fs = require('fs');
-const https = require('https');
+const request = require('request');
 
 const storage = require('azure-storage');
 const blobService = storage.createBlobService();
 
 const downloadImage = (url, localPath) => {
     return new Promise((resolve, reject) => {
-        let file = fs.createWriteStream(localPath);
-        https.get(url, function(response, err) {
+        request.head(url, function(err, res, body){
             if(err) {
                 reject();
             }
 
-            response.pipe(file);
-            resolve();
+            request(uri).pipe(fs.createWriteStream(localPath)).on('close', () => {
+                resolve();
+            });
         });
     })
 }
@@ -55,12 +55,10 @@ module.exports = async function (context, req) {
             const fileFormat = url.substring(url.indexOf('format=') + 7);
             const imagePath = `./${req.query.name}.${fileFormat}`;
             await downloadImage(req.query.imageurl, imagePath);
-            const stats = fs.statSync(imagePath)
-            const fileSizeInBytes = stats.size
             await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
-                body: fileSizeInBytes
+                body: `${imagePath} added to blob`
             };
         }
         else {
