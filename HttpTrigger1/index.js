@@ -1,5 +1,6 @@
 require('dotenv').load();
 
+const path = require('path');
 const fs = require('fs');
 const storage = require('azure-storage');
 const blobService = storage.createBlobService();
