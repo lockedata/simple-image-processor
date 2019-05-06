@@ -49,7 +49,7 @@ module.exports = async function (context, req) {
             const fileFormat = url.substring(url.indexOf('format=') + 7);
             const imagePath = `./${req.query.name}.${fileFormat}`;
             await downloadImage(req.query.imageurl, `${req.query.name}.${fileFormat}`);
-            await uploadLocalFile('sample', imagePath);
+            await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
                 body: `${imagePath} added to blob`
