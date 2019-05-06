@@ -8,12 +8,18 @@ const storage = require('azure-storage');
 const blobService = storage.createBlobService();
 
 
-const downloadImage = (url, localPath) => axios({
-  url: url,
-  responseType: 'stream',
-}).then(response => {
-  response.data.pipe(fs.createWriteStream(localPath));
-});
+const downloadImage = (url, localPath) => {
+    return new Promise((resolve, reject) => {
+        axios({
+          url: url,
+          responseType: 'stream',
+        }).then(response => {
+          response.data.pipe(fs.createWriteStream(localPath).on('end', () => {
+            resolve();
+          }));
+        });
+    }
+}
 
 const uploadLocalFile = (containerName, filePath) => {
     return new Promise((resolve, reject) => {
@@ -48,7 +54,7 @@ module.exports = async function (context, req) {
             let url = req.query.imageurl;
             const fileFormat = url.substring(url.indexOf('format=') + 7);
             const imagePath = `./${req.query.name}.${fileFormat}`;
-            await downloadImage(req.query.imageurl, `${req.query.name}.${fileFormat}`);
+            await downloadImage(req.query.imageurl, imagePath);
             await uploadLocalFile('samples', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
