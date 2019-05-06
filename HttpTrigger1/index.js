@@ -6,20 +6,15 @@ const axios = require('axios');
 
 const storage = require('azure-storage');
 const blobService = storage.createBlobService();
+const sleep = require('system-sleep');
 
-
-const downloadImage = (url, localPath) => {
-    return new Promise((resolve, reject) => {
-        axios({
-          url: url,
-          responseType: 'stream',
-        }).then(response => {
-          response.data.pipe(fs.createWriteStream(localPath).on('end', () => {
-            resolve();
-          }));
-        });
-    }
-}
+const downloadImage = (url, localPath) => axios({
+    url: url,
+    responseType: 'stream',
+}).then(response => {
+    response.data.pipe(fs.createWriteStream(localPath));
+    sleep(2000);
+});
 
 const uploadLocalFile = (containerName, filePath) => {
     return new Promise((resolve, reject) => {
