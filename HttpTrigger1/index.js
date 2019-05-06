@@ -15,22 +15,6 @@ const downloadImage = (url, localPath) => axios({
   response.data.pipe(fs.createWriteStream(localPath));
 });
 
-
-
-// const downloadImage = (url, localPath) => {
-//     return new Promise((resolve, reject) => {
-//         request.head(url, function(err, res, body){
-//             if(err) {
-//                 reject();
-//             }
-
-//             request(uri).pipe(fs.createWriteStream(localPath)).on('close', () => {
-//                 resolve();
-//             });
-//         });
-//     })
-// }
-
 const uploadLocalFile = (containerName, filePath) => {
     return new Promise((resolve, reject) => {
         const fullPath = path.resolve(filePath);
@@ -65,7 +49,7 @@ module.exports = async function (context, req) {
             const fileFormat = url.substring(url.indexOf('format=') + 7);
             const imagePath = `./${req.query.name}.${fileFormat}`;
             await downloadImage(req.query.imageurl, `${req.query.name}.${fileFormat}`);
-            await uploadLocalFile('samples', imagePath);
+            await uploadLocalFile('sample', imagePath);
             await deleteLocalFile(imagePath);
             context.res = {
                 body: `${imagePath} added to blob`
